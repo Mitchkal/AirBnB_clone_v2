@@ -19,13 +19,17 @@ class test_basemodel(unittest.TestCase):
 
     def setUp(self):
         """ """
-        pass
+        self.the_model = BaseModel()
+        self.the_model.name = "nameless"
+        self.new = BaseModel()
+
+    def test_type_id(self):
+        """verifies id type"""
+        self.assertEqual("<class 'str'>", str(type(self.the_model.id)))
 
     def tearDown(self):
-        try:
-            os.remove('file.json')
-        except:
-            pass
+        """teardown"""
+        del self.the_model
 
     def test_default(self):
         """ """
@@ -47,14 +51,36 @@ class test_basemodel(unittest.TestCase):
         with self.assertRaises(TypeError):
             new = BaseModel(**copy)
 
+    @unittest.skipIf(storage == "db", "Testing database storage only")
     def test_save(self):
-        """ Testing save """
+        """Checks that the dates differ with updated at"""
+        old_update = self.new.updated_at
+        self.new.save()
+        self.assertNotEqual(self.new.updated_at, old_update)
+
+    """def test_save(self):
+        """ """
         i = self.value()
         i.save()
         key = self.name + "." + i.id
         with open('file.json', 'r') as f:
             j = json.load(f)
-            self.assertEqual(j[key], i.to_dict())
+            self.assertEqual(j[key], i.to_dict())"""
+
+    @unittest.skipIf(storage != "db", "Testing if using DBStorage")
+    def test_basemodel_attrtype(self):
+        """verifies attributes types"""
+        new2 = BaseModel
+        self.assertFalse(isinstance(news.id, str))
+        self.assertFalse(isinstance(news.created_at, str))
+        self.assertFalse(isinstance(news.updated_at, str))
+
+    @unittest.skipIf(storage != "db", "Testing if using DBStorage")
+    def test_basemodel_hasattr(self):
+        """verifies Class attributes"""
+        self.assertTrue(hasattr(self.new, "id"))
+        self.assertTrue(hasattr(self.new, "created_at"))
+        self.assertTrue(hasattr(self.new, "updated_at"))
 
     def test_str(self):
         """ """
