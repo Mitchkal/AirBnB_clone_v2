@@ -3,14 +3,17 @@
 import cmd
 import sys
 import re
+import shlex
+import models
 from models.base_model import BaseModel
-from models.__init__ import storage
+from models.review import Review
 from models.user import User
+# from models.__init__ import storage
+from models import storage
 from models.place import Place
 from models.state import State
 from models.city import City
 from models.amenity import Amenity
-from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -116,12 +119,13 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args:
+        if args is None:
             print("** class name missing **")
             return
         try:
-            args_list = args.split()
+            args_list = shlex.split(args)
             class_name = eval(args_list[0])()
+            print(f"class is {class_name}")
 
             for param in args_list[1:]:
                 try:
@@ -129,17 +133,22 @@ class HBNBCommand(cmd.Cmd):
                     val = param.split("=")[1]
                     if hasattr(class_name, key) is True:
                         val = val.replace("_", " ")
-                        try:
+                        """try:
+                            print(f"Attempting to evaluate: {val}")
                             val = eval(val)
+                            # print(f"val is {val}")
                         except Exception as e:
-                            pass
+                            print(f"Caught yyy an exception: {e}")
+                            # pass"""
                         setattr(class_name, key, val)
                 except (ValueError, IndexError):
                     pass
-                class_name.save()
-                print(class_name.id)
+            class_name.save()
+            print(f"save failed")
+            print(class_name.id)
         except Exception as e:
-            print("** class doesn't exist **")
+            # print(f"Caught the an exception: {e}")
+            # print("** class doesn't exist **")
             return
 
     def help_create(self):
@@ -216,12 +225,33 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
         arguments = args.split(" ")
+        print(f"the arguments {arguments}")
         print_list = []
+
         objectz = storage.all(arguments[0])
         try:
             if arguments[0] != "":
-                models.classes(arguments[0])
-        except (KeyError, NameError):
+                class_object = models.classes.get(arguments[0])
+                if class_object:
+                    print("there")
+                    objectz = storage.all(arguments[0])
+                    print(f"objectz is {objectz}")
+                    for k, v in objectz.items():
+                        print("now")
+                        print_list.append("[{}] ({}) {}".format(
+                            v.__class__.__name__, v.id, v.__dict__
+                        ))
+                else:
+                    print("** Class doesn't exist **")
+        except Exception as e:
+            print("Caught an exception:", e)
+        for item in print_list:
+            print("here")
+            print(item)
+
+        # models.classes[arguments[0]]
+        """ except (KeyError, NameError):
+            print("not here")
             print("** class doesn't exist ***")
             return
         try:
@@ -229,7 +259,7 @@ class HBNBCommand(cmd.Cmd):
                 print_list.append(v)
         except Exception as E:
             pass
-        print(print_list)
+        print(print_list)"""
 
         """print_list = []
 

@@ -3,13 +3,12 @@
 module db_storage
 """
 
-import models
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
 import models
+from models.base_model import BaseModel, Base
 from models.city import City
 from models.state import State
-from models.base_model import Base
 from os import getenv
 
 
@@ -36,7 +35,20 @@ class DBStorage:
         from models import classes
 
         obj_dict = {}
-        if cls:
+        if cls != None:
+            objects = self.__session.query(classes[cls]).all()
+        else:
+            objects ={}
+            for items in classes.values():
+                objects.extend(self.__session.query(items).all())
+        for obj in objects:
+            # print(f"{obj}")
+            key = '{}.{}'.format(obj.__class__.__name__, obj.id)
+            # print(f"{key}")
+            obj_dict[key] = obj
+
+        return obj_dict
+        """if cls:
             query_objs = self.__session.query(classes[cls]).all()
         else:
             query_objs = []
@@ -47,7 +59,7 @@ class DBStorage:
             key = '{}.{}'.format(obj.__class__.__name__, obj.id)
             obj_dict[key] = obj
 
-        return obj_dict
+        return obj_dict"""
 
     def new(self, obj):
         """adds new object to current database session"""

@@ -9,13 +9,14 @@ from os import getenv
 
 Base = declarative_base()
 
+
 class BaseModel:
     """A base class for all hbnb models"""
     # __abstract__ = True
     id = Column(String(60), primary_key=True, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-                        # onupdate=datetime.utcnow())
+    # onupdate=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
@@ -26,16 +27,16 @@ class BaseModel:
             # storage.new(self)
         else:
             if kwargs.get("created_at"):
-                kwargs['updated_at'] = datetime.strptime(
-                    kwargs['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                kwargs['created_at'] = datetime.strptime(
+                    kwargs['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
 
                 # self.__dict__.update(kwargs)
             else:
                 self.updated_at = datetime.now()
 
             if kwargs.get("created_at"):
-                kwargs['created_at'] = datetime.strptime(
-                    kwargs['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
+                kwargs['updated_at'] = datetime.strptime(
+                    kwargs['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
                 # self.__dict__.update(kwargs)
                 # del kwargs['__class__']
             else:
@@ -48,9 +49,6 @@ class BaseModel:
                 self.id = str(uuid.uuid4())
 
             # self.__dict__.update(kwargs)
-    """@property
-    def metadata(self):
-        return Base.metadata"""
 
     def __str__(self):
         """Returns a string representation of the instance"""
