@@ -27,6 +27,9 @@ class HBNBCommand(cmd.Cmd):
                'State': State, 'City': City, 'Amenity': Amenity,
                'Review': Review
               }
+    clazes = {"BaseModel", "User", "State", "City", "Place",
+              "Amenity", "Review"
+              }
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
              'number_rooms': int, 'number_bathrooms': int,
@@ -125,7 +128,7 @@ class HBNBCommand(cmd.Cmd):
         try:
             args_list = shlex.split(args)
             class_name = eval(args_list[0])()
-            print(f"class is {class_name}")
+            # print(f"class is {class_name}")
 
             for param in args_list[1:]:
                 try:
@@ -144,7 +147,6 @@ class HBNBCommand(cmd.Cmd):
                 except (ValueError, IndexError):
                     pass
             class_name.save()
-            print(f"save failed")
             print(class_name.id)
         except Exception as e:
             # print(f"Caught the an exception: {e}")
@@ -224,20 +226,37 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
-        arguments = args.split(" ")
-        print(f"the arguments {arguments}")
+        args = args.split(" ")
+        # print(f"the arguments {arguments}")
         print_list = []
+        if len(args) == 0:
+            for item in storage.all().values():
+                obj_str = "[{}] ({}) {}".format(
+                   item.__class__.__name__, item.id, item.__dict__
+                   )
+                print_list.append(obj_str)
+            print(', '.join(print_list))
+        elif args[0] in HBNBCommand.clazes:
+            for k, v in storage.all().items():
+                if args[0] in k:
+                    obj_str = "[{}] ({}) {}".format(
+                        v.__class__.__name__, v.id, v.__dict__
+                        )
+                    print_list.append(obj_str)
+            print(', '.join(print_list))
+        else:
+            print("** class doesn't exist **")
 
-        objectz = storage.all(arguments[0])
+        """objectz = storage.all(arguments[0])
         try:
             if arguments[0] != "":
                 class_object = models.classes.get(arguments[0])
                 if class_object:
-                    print("there")
+                    # print("there")
                     objectz = storage.all(arguments[0])
-                    print(f"objectz is {objectz}")
+                    # print(f"objectz is {objectz}")
                     for k, v in objectz.items():
-                        print("now")
+                        # print("now")
                         print_list.append("[{}] ({}) {}".format(
                             v.__class__.__name__, v.id, v.__dict__
                         ))
@@ -246,10 +265,10 @@ class HBNBCommand(cmd.Cmd):
         except Exception as e:
             print("Caught an exception:", e)
         for item in print_list:
-            print("here")
+            # print("here")
             print(item)
 
-        # models.classes[arguments[0]]
+        # models.classes[arguments[0]]"""
         """ except (KeyError, NameError):
             print("not here")
             print("** class doesn't exist ***")

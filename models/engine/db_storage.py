@@ -35,10 +35,10 @@ class DBStorage:
         from models import classes
 
         obj_dict = {}
-        if cls != None:
+        if cls is not None:
             objects = self.__session.query(classes[cls]).all()
         else:
-            objects ={}
+            objects = {}
             for items in classes.values():
                 objects.extend(self.__session.query(items).all())
         for obj in objects:
