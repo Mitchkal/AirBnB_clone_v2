@@ -23,17 +23,18 @@ def do_pack():
 
     archive_name = "web_static_{}.tgz".format(date_str)
 
-    result = local("tar -cvzf versions/{} web_static".format(
+    local("tar -cvzf versions/{} web_static".format(
         archive_name))
 
-    if result.succeeded:
-        archive_path = os.path.join("versions", archive_name)
+    # if result.succeeded:
+    archive_path = os.path.join("versions", archive_name)
         # local("chmod 664 {}".format(archive_path))
-        print("web_static packed: {} -> {} Bytes".format(
-            archive_path, os.path.getsize(archive_path)))
-        return archive_path
-    else:
-        return None
+    print("web_static packed: {} -> {} Bytes".format(
+        archive_path, os.path.getsize(archive_path)))
+
+    return archive_path
+    # else:
+        # return None
 
 
 def do_deploy(archive_path):
@@ -55,7 +56,7 @@ def do_deploy(archive_path):
             filename, folder_name))
 
         run("rm /tmp/{}".format(filename))
-        run("rm -f /data/web_static/current")
+        run("rm -rf /data/web_static/current")
         run("mv /data/web_static/releases/{}/web_static/* /data/web_static\
 /releases/{}".format(folder_name, folder_name))
         run("rm -rf /data/web_static/releases/{}/web_static".format(
