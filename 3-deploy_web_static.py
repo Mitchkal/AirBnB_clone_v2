@@ -28,13 +28,13 @@ def do_pack():
 
     # if result.succeeded:
     archive_path = os.path.join("versions", archive_name)
-        # local("chmod 664 {}".format(archive_path))
+    # local("chmod 664 {}".format(archive_path))
     print("web_static packed: {} -> {} Bytes".format(
         archive_path, os.path.getsize(archive_path)))
 
     return archive_path
     # else:
-        # return None
+    # return None
 
 
 def do_deploy(archive_path):
