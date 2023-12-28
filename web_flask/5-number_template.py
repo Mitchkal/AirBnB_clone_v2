@@ -1,15 +1,15 @@
 #!/usr/bin/python3
 """
-module 5-number_template
+module 4-number_route
 """
-from flask import Flask, abort, render_template
+from flask import Flask, render_template, abort
 app = Flask(__name__)
 
 
 @app.route('/', strict_slashes=False)
 def display_hello():
-    """displays hello hbnb"""
-    return ("Hello HBNB!")
+    """displays Hello HBNB"""
+    return ("Hello HBNB")
 
 
 @app.route('/hbnb', strict_slashes=False)
@@ -19,26 +19,29 @@ def display_hbnb():
 
 
 @app.route('/c/<text>', strict_slashes=False)
-def display_c(text):
-    """displays text with spaces"""
+def display_text(text):
+    """displays text"""
     text_with_space = text.replace('_', ' ')
     return ('C {}'.format(text_with_space))
 
 
-@app.route('/python/(<text>)', strict_slashes=False)
-@app.route('/python/', strict_slashes=False)
-def display_python(text='is cool'):
-    """displays with or without custom text"""
+@app.route('/python/<text>', strict_slashes=False)
+@app.route('/python', strict_slashes=False)
+def display_c(text='is cool'):
+    """
+    returns text with default
+    """
     text_with_spaces = text.replace('_', ' ')
     return ('Python {}'.format(text_with_spaces))
 
 
 @app.route('/number/<n>', strict_slashes=False)
-def display_if_int(n):
-    """displays if input n is an integer"""
+def test_integer(n):
+    """displays if number is integer"""
     try:
         n = int(n)
-        return ('{} is an integer'.format(n))
+        # if isinstance(n, int):
+        return ('{} is a number'.format(n))
     except Exception as e:
         abort(404)
 
