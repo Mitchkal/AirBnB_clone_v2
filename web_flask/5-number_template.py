@@ -46,14 +46,10 @@ def test_integer(n):
         abort(404)
 
 
-@app.route('/number_template/<n>', strict_slashes=False)
+@app.route('/number_template/<int:n>', strict_slashes=False)
 def number_template(n):
     """displays html page if n is integer"""
-    try:
-        n = int(n)
-        return (render_template('5-number.html', Number=n))
-    except Exception as e:
-        abort(404)
+    return (render_template('5-number.html', Number=n))
 
 
 if __name__ == "__main__":
