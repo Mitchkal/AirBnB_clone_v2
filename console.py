@@ -224,8 +224,8 @@ class HBNBCommand(cmd.Cmd):
         print("Destroys an individual instance of a class")
         print("[Usage]: destroy <className> <objectId>\n")
 
-    def do_all(self, args):
-        """ Shows all objects, or all objects of a class"""
+    """def do_all(self, args):
+        Shows all objects, or all objects of a class
         args = args.split(" ")
         # print(f"the arguments {arguments}")
         print_list = []
@@ -247,7 +247,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
 
-        """objectz = storage.all(arguments[0])
+        objectz = storage.all(arguments[0])
         try:
             if arguments[0] != "":
                 class_object = models.classes.get(arguments[0])
@@ -268,8 +268,8 @@ class HBNBCommand(cmd.Cmd):
             # print("here")
             print(item)
 
-        # models.classes[arguments[0]]"""
-        """ except (KeyError, NameError):
+        models.classes[arguments[0]]"""""" except (KeyError,
+        NameError):
             print("not here")
             print("** class doesn't exist ***")
             return
@@ -278,9 +278,7 @@ class HBNBCommand(cmd.Cmd):
                 print_list.append(v)
         except Exception as E:
             pass
-        print(print_list)"""
-
-        """print_list = []
+        print(print_list)""""""print_list = []
 
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
@@ -295,6 +293,36 @@ class HBNBCommand(cmd.Cmd):
                 print_list.append(str(v))
 
         print(print_list)"""
+
+    def do_all(self, line):
+        """Prints all string representation of all instances
+        Exceptions:
+            NameError: when there is no object taht has the name
+        """
+        if line:
+            args = line.split(" ")
+            if args[0] not in self.all_classes:
+                print("** class doesn't exist **")
+                return
+            objects = storage.all(line)
+        my_list = []
+        if not line:
+            objects = storage.all()
+            for key in objects:
+                my_list.append(objects[key])
+            print(my_list)
+            return
+        # try:
+            # args = line.split(" ")
+            # if args[0] not in self.all_classes:
+            #     raise NameError()
+        for key in objects:
+            name = key.split('.')
+            if name[0] == args[0]:
+                my_list.append(objects[key])
+        print(my_list)
+        # except NameError:
+        #     print("** class doesn't exist **")
 
     def help_all(self):
         """ Help information for the all command """

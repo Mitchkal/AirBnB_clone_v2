@@ -9,24 +9,37 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
-        """Returns a list of objects of class or ll"""
-        dictionary = {}
+        """return dictrionary of objects in class"""
+        if cls:
+            return {key: obj for (key, obj) in self.__objects.items()
+                    if isinstance(obj, type(cls))}
+        return self.__objects
+
+    """def all(self, cls=None):
+        Returns a list of objects of class or ll
+        # dictionary = {}
+        result_dict = {}
         if cls is None:
-            return self.__objects
+            # return self.__objects
+            return (self.__objects)
         if cls != "":
             for k, v in self.__objects.items():
+                # print("key in self: {}".format(k))
                 if cls == k.split(".")[0]:
-                    dictionary[k] = v
-                    return dictionary
-
-            # return {obj.id: obj for obj in self.__objects.values()
-            # if type(obj) is cls}
-                else:
-                    return self.__objects
+                    # formatted_state = "[{}] ({}) {}".format(cls, v['id'],
+                    # str(v))
+                    result_dict[k] = v
+                    # return dictionary
+                    # result_list.append(v)
+                return (result_dict)
+        else:
+            return self.__objects"""
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        # self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        objname = obj.__class__.__name__
+        FileStorage.__objects["{}.{}".format(objname, obj.id)] = obj
 
     def save(self):
         """Saves storage dictionary to file"""
@@ -73,3 +86,7 @@ class FileStorage:
             if keys in FileStorage.__objects:
                 FileStorage.__objects.pop(keys, None)
                 self.save()
+
+    def close(self):
+        """deserializes json file to objects"""
+        self.reload()

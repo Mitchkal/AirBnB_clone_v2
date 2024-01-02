@@ -38,7 +38,8 @@ class DBStorage:
         if cls is not None:
             objects = self.__session.query(classes[cls]).all()
         else:
-            objects = {}
+            objects = []
+            # objects = {}
             for items in classes.values():
                 objects.extend(self.__session.query(items).all())
         for obj in objects:
@@ -82,4 +83,7 @@ class DBStorage:
 
     def close(self):
         """close current session"""
+        if self.__session:
+            self._session.close()
+            self.__session = None
         self.__session.remove()
