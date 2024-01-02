@@ -38,16 +38,18 @@ class FileStorage:
     def new(self, obj):
         """Adds new object to storage dictionary"""
         # self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
-        objname = obj.__class__.__name__
-        FileStorage.__objects["{}.{}".format(objname, obj.id)] = obj
+        # objname = obj.__class__.__name__
+        # FileStorage.__objects["{}.{}".format(objname, obj.id)] = obj
+        if obj:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            self.__objects[key] = obj
 
     def save(self):
         """Saves storage dictionary to file"""
-        with open(FileStorage.__file_path, 'w') as f:
-            temp = {}
-            temp.update(FileStorage.__objects)
-            for key, val in temp.items():
-                temp[key] = val.to_dict()
+        temp = {}
+        for key, val in self.__objects.items():
+            temp[key] = val.to_dict()
+        with open(self.__file_path, 'w', encoding="UTF-8") as f:
             json.dump(temp, f)
 
     def reload(self):
@@ -82,10 +84,10 @@ class FileStorage:
         deletes obj from __objects
         """
         if obj is not None:
-            keys = f"{obj.__class__.__name__}.{obj.id}"
-            if keys in FileStorage.__objects:
-                FileStorage.__objects.pop(keys, None)
-                self.save()
+            keys = f"{obj.__class__.__name__},{obj.id}"
+            if (keys, obj) in self.__objects.items():
+                self.__objects.pop(keys, None)
+        self.save()
 
     def close(self):
         """deserializes json file to objects"""

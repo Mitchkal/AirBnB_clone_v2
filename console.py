@@ -301,28 +301,28 @@ class HBNBCommand(cmd.Cmd):
         """
         if line:
             args = line.split(" ")
-            if args[0] not in self.all_classes:
+            if args[0] not in self.classes:
                 print("** class doesn't exist **")
                 return
-            objects = storage.all(line)
-        my_list = []
-        if not line:
-            objects = storage.all()
+            # print("Args0 is {}".format(args[0]))
+            # print("len storage is {}".format(len(storage)))
+            objects = storage.all(args[0])
+            # print("len objects is {}".format(len(objects)))
+
+            my_list = []
             for key in objects:
-                my_list.append(objects[key])
+                print("{}".format(key))
+                name = key.split('.')
+                if name[0] == args[0]:
+                    my_list.append(objects[key])
+            print(my_list)
+        else:
+            # print("now here")
+            objects = storage.all()
+            my_list = list(objects.values())
             print(my_list)
             return
-        # try:
-            # args = line.split(" ")
-            # if args[0] not in self.all_classes:
-            #     raise NameError()
-        for key in objects:
-            name = key.split('.')
-            if name[0] == args[0]:
-                my_list.append(objects[key])
-        print(my_list)
-        # except NameError:
-        #     print("** class doesn't exist **")
+
 
     def help_all(self):
         """ Help information for the all command """

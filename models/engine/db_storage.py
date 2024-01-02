@@ -32,7 +32,22 @@ class DBStorage:
 
     def all(self, cls=None):
         """Queries all objects depending on classs name"""
-        from models import classes
+        if cls:
+            objs = self.__session.query(self.classes()[cls])
+        else:
+            objs = self.__session.query(State).all()
+            objs += self.__session.query(City).all()
+            objs += self.__session.query(User).all()
+            objs += self.__session.query(Place).all()
+            objs += self.__session.query(Amenity).all()
+            objs += self.__session.query(Review).all()
+
+        dicti = {}
+        for obj in objs:
+            k = '{}.{}'.format(type(obj).__name__, obj.id)
+            dicti[k] = obj
+        return dicti
+        """from models import classes
 
         obj_dict = {}
         if cls is not None:
@@ -48,7 +63,7 @@ class DBStorage:
             # print(f"{key}")
             obj_dict[key] = obj
 
-        return obj_dict
+        return obj_dict"""
         """if cls:
             query_objs = self.__session.query(classes[cls]).all()
         else:
