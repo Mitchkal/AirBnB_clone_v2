@@ -9,6 +9,10 @@ import models
 from models.base_model import BaseModel, Base
 from models.city import City
 from models.state import State
+from models.user import User
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
 from os import getenv
 
 
@@ -32,8 +36,12 @@ class DBStorage:
 
     def all(self, cls=None):
         """Queries all objects depending on classs name"""
-        if cls:
-            objs = self.__session.query(self.classes()[cls])
+        # print("self.classes:{} ".format(self.classes()))
+        # print("cls is {}".format(cls))
+        if cls and cls in self.classes():
+            obj_class = self.classes()[cls]
+            objs = self.__session.query(obj_class)
+            # objs = self.__session.query(self.classes()[cls])
         else:
             objs = self.__session.query(State).all()
             objs += self.__session.query(City).all()
@@ -90,6 +98,25 @@ class DBStorage:
         if obj:
             self.__session.delete(obj)
 
+    def classes(self):
+        """Return dictionary of classes"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
+
+        classes = {"BaseModel": BaseModel,
+                   "User": User,
+                   "City": City,
+                   "State": State,
+                   "Place": Place,
+                   "Amenity": Amenity,
+                   "Review": Review}
+        return classes
+
     def reload(self):
         """creates all tables in DB and created DB session"""
         Base.metadata.create_all(self.__engine)
@@ -99,6 +126,4 @@ class DBStorage:
     def close(self):
         """close current session"""
         if self.__session:
-            self._session.close()
-            self.__session = None
-        self.__session.remove()
+            self.__session.close()

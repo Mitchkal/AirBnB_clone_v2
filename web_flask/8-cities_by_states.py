@@ -18,6 +18,7 @@ def cities_by_states():
     sorted_states = sorted(states, key=lambda x: x.name)
     return render_template('8-cities_by_states.html', states=sorted_states)
 
+
 @app.teardown_appcontext
 def teardown_appcontext(exception):
     """closes context"""
