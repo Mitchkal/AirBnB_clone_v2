@@ -17,6 +17,7 @@ def display_states():
     sorted_states = sorted(states, key=lambda x: x.name)
     return render_template('7-states_list.html', states=sorted_states)
 
+
 @app.teardown_appcontext
 def teardown_appcontext(exception):
     """closes context"""
