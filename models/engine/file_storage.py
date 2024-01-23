@@ -10,30 +10,13 @@ class FileStorage:
 
     def all(self, cls=None):
         """return dictrionary of objects in class"""
-        if cls:
-            return {key: obj for (key, obj) in self.__objects.items()
-                    if isinstance(obj, type(cls))}
+        if cls is not None:
+            item_dict = {}
+            for key, val in self.__objects.items():
+                if cls == val.__class__ or cls == val.__class__.__name__:
+                    item_dict[key] = val
+            return item_dict
         return self.__objects
-
-    """def all(self, cls=None):
-        Returns a list of objects of class or ll
-        # dictionary = {}
-        result_dict = {}
-        if cls is None:
-            # return self.__objects
-            return (self.__objects)
-        if cls != "":
-            for k, v in self.__objects.items():
-                # print("key in self: {}".format(k))
-                if cls == k.split(".")[0]:
-                    # formatted_state = "[{}] ({}) {}".format(cls, v['id'],
-                    # str(v))
-                    result_dict[k] = v
-                    # return dictionary
-                    # result_list.append(v)
-                return (result_dict)
-        else:
-            return self.__objects"""
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -41,7 +24,7 @@ class FileStorage:
         # objname = obj.__class__.__name__
         # FileStorage.__objects["{}.{}".format(objname, obj.id)] = obj
         if obj:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
+            key = obj.__class__.__name__ + "." + obj.id
             self.__objects[key] = obj
 
     def save(self):

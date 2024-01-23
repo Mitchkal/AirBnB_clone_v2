@@ -38,22 +38,13 @@ class DBStorage:
         """Queries all objects depending on classs name"""
         # print("self.classes:{} ".format(self.classes()))
         # print("cls is {}".format(cls))
-        if cls and cls in self.classes():
-            obj_class = self.classes()[cls]
-            objs = self.__session.query(obj_class)
-            # objs = self.__session.query(self.classes()[cls])
-        else:
-            objs = self.__session.query(State).all()
-            objs += self.__session.query(City).all()
-            objs += self.__session.query(User).all()
-            objs += self.__session.query(Place).all()
-            objs += self.__session.query(Amenity).all()
-            objs += self.__session.query(Review).all()
-
         dicti = {}
-        for obj in objs:
-            k = '{}.{}'.format(type(obj).__name__, obj.id)
-            dicti[k] = obj
+        for clss in self.classes():
+            if cls is None or cls is self.classes()[clss] or cls is clss:
+                objs = self.__session.query(self.classes()[clss]).all()
+                for obj in objs:
+                    k = '{}.{}'.format(obj.__class__.__name__, obj.id)
+                    dicti[k] = obj
         return dicti
         """from models import classes
 
